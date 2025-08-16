@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ブラウザマルチテスト</title>
+<style>
+  body { margin: 0; background: #222; }
+  canvas { display: block; margin: auto; background: #444; }
+</style>
+</head>
+<body>
+<canvas id="game" width="600" height="400"></canvas>
+<script>
+let ws = new WebSocket(`ws://${location.host}`);
+let ctx = document.getElementById('game').getContext('2d');
+let myId = null;
+let players = {};
+
+ws.onmessage = (msg) => {
+  let data = JSON.parse(msg.data);
+  if (data.type === 'init') {
+    myId = data.id;
+    players = data.players;
+  } else if (data.type === 'update') {
+    players[data.id] = data.pos;
+  } else if (data.type === 'remove') {
+    delete players[data.id];
+  }
+};
+
+document.addEventListener('keydown', (e) => {
+  if (!myId) return;
+  let pos = players[myId];
+  if (e.key === 'ArrowUp') pos.y -= 5;
+  if (e.key === 'ArrowDown') pos.y += 5;
+  if (e.key === 'ArrowLeft') pos.x -= 5;
+  if (e.key === 'ArrowRight') pos.x += 5;
+  ws.send(JSON.stringify({ type: 'move', pos }));
+});
+
+function draw() {
+  ctx.clearRect(0, 0, 600, 400);
+  for (let id in players) {
+    ctx.fillStyle = id === myId ? 'red' : 'blue';
+    ctx.fillRect(players[id].x, players[id].y, 20, 20);
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+</script>
+</body>
+</html>
