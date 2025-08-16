@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: suzume-game-server
+    env: node
+    plan: free
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    autoDeploy: true
+    runtime: "node"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: ALLOWED_ORIGIN
+        value: https://あなたのフロントの本番ドメイン
+    healthCheckPath: /healthz
