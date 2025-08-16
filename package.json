@@ -1,4 +1,13 @@
-"scripts": {
-  "start": "node server.cjs",
-  "dev": "node server.cjs"
+{
+  "name": "suzume-game-server",
+  "version": "1.0.0",
+  "private": true,
+  "engines": { "node": "20.x" },
+  "scripts": {
+    "start": "node server.cjs",
+    "dev": "node server.cjs"
+  },
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
 }
